@@ -35,6 +35,9 @@ public class DizionarioController {
 	@FXML
 	private Button btnTrovaGradoMax;
 
+    @FXML
+    private Button btnTuttiVicini;
+
 	@FXML
 	void doReset(ActionEvent event) {
 		txtResult.clear();
@@ -75,7 +78,27 @@ public class DizionarioController {
 		}
 		List<String> vicini = model.displayNeighbours(parola, numeroLettere);
 		try {
+			txtResult.appendText("VICINI:\n");
 			for(String s : vicini){
+				txtResult.appendText(s+"\n");
+			}
+		} catch (RuntimeException re) {
+			txtResult.setText(re.getMessage());
+		}
+	}
+	
+	@FXML
+	void doTuttiVicini(ActionEvent event) {
+		int numeroLettere = Integer.parseInt(inputNumeroLettere.getText());
+		String parola = inputParola.getText();
+		if(parola.length()!=numeroLettere){
+			txtResult.setText("La parola inserita non è della lunghezza inserita!");
+			return;
+		}
+		List<String> tuttiVicini = model.tuttiVicini(parola, numeroLettere);
+		try {
+			txtResult.appendText("TUTTI I VICINI:\n");
+			for(String s : tuttiVicini){
 				txtResult.appendText(s+"\n");
 			}
 		} catch (RuntimeException re) {
@@ -91,6 +114,7 @@ public class DizionarioController {
 		assert btnGeneraGrafo != null : "fx:id=\"btnGeneraGrafo\" was not injected: check your FXML file 'Dizionario.fxml'.";
 		assert btnTrovaVicini != null : "fx:id=\"btnTrovaVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
 		assert btnTrovaGradoMax != null : "fx:id=\"btnTrovaTutti\" was not injected: check your FXML file 'Dizionario.fxml'.";
+		assert btnTuttiVicini != null : "fx:id=\"btnTuttiVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
 	}
 
 	/**

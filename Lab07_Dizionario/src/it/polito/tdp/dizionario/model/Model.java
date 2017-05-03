@@ -5,6 +5,7 @@ import java.util.List;
 import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import it.polito.tdp.dizionario.db.WordDAO;
 
@@ -76,6 +77,42 @@ public class Model {
 		}
 		
 		return vicini;
+	}
+	
+	public List<String> tuttiVicini(String parolaInserita, int numeroLettere) {
+		List<String> listaLunghe = wD.getAllWordsFixedLength(numeroLettere);
+		
+		UndirectedGraph<String, DefaultEdge> grafo = new SimpleGraph<>(DefaultEdge.class);
+		
+		for (String s : listaLunghe)
+			grafo.addVertex(s);
+		
+		for (String s1 : listaLunghe){
+			for (String s2 : listaLunghe){
+				char array1[] = s1.toCharArray();
+				char array2[] = s2.toCharArray();
+				int cont=0;
+				for(int i=0; i<s1.length(); i++)
+					if(array1[i]==array2[i])
+						cont++;
+				if(cont==s1.length()-1)
+					grafo.addEdge(s1, s2);
+			}
+		}
+		
+		List<String> tuttiVicini = new ArrayList<String>();
+		
+		if(!listaLunghe.contains(parolaInserita)){
+			tuttiVicini.add("Il dizionario non contiene la parola inserita!");
+		}
+		
+		BreadthFirstIterator<String, DefaultEdge> bfi = new BreadthFirstIterator <String, DefaultEdge>(grafo, parolaInserita);
+		
+		while(bfi.hasNext()){
+			tuttiVicini.add(bfi.next());
+		}
+		
+		return tuttiVicini;
 	}
 
 	public String findMaxDegree(int numeroLettere) {
